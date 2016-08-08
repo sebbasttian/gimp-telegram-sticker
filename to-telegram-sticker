@@ -27,7 +27,7 @@ def python_telegram_sticker(timg, tdrawable, alphaThreshold):
     pdb.plug_in_autocrop(timg, thresholdLayer)
 
     newWidth, newHeight = resizeToTargetSize(timg)
-    pdb.gimp_image_resize(timg, newWidth + 30, newHeight + 30, 10, 10)
+    pdb.gimp_image_resize(timg, newWidth + 20, newHeight + 20, 10, 10)
     pdb.gimp_layer_resize_to_image_size(imageLayer)
     
     # Remove threshold layer
@@ -36,10 +36,10 @@ def python_telegram_sticker(timg, tdrawable, alphaThreshold):
 
     # Create white outline
     renderer = strokeRenderer()
-    strokeLayer = renderer.renderStroke(timg, imageLayer, (255, 255, 255), 5, alphaThreshold)
+    strokeLayer = renderer.renderStroke(timg, imageLayer, (255, 255, 255), 2, alphaThreshold)
     
     # Create drop shadow
-    pdb.script_fu_drop_shadow(timg, strokeLayer, 5, 5, 10, (0, 0, 0), 25, 0)
+    pdb.script_fu_drop_shadow(timg, strokeLayer, 4, 4, 6, (0, 0, 0), 100, 0)
     
     # Restore drawing context and end undo group
     timg.undo_group_end()
@@ -164,7 +164,7 @@ class strokeRenderer:
         return (u * u - i * i + gu * gu - gi * gi) // (2 * (u - i))
     
 def resizeToTargetSize(timg):
-    targetSize = 512 - 30 # 10 for the outline and 20 for the shadow
+    targetSize = 512 - 20 # 4 for the outline and 16 for the shadow
     width      = timg.width
     height     = timg.height
     
@@ -189,10 +189,9 @@ register(
         "<Image>/Filters/Generic/Telegram Sticker...",
         "RGB*",
         [
-            (PF_SLIDER, "alphaThreshold",  "_Alpha threshold", 30, (0, 255, 1)),
+            (PF_SLIDER, "alphaThreshold",  "_Alpha threshold", 0, (0, 255, 1)),
         ],
         [],
         python_telegram_sticker)
 
 main()
-
